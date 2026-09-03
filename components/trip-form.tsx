@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { BUDGET_RANGES, COMPANION_RELATIONSHIP_OPTIONS, TRIP_PURPOSE_OPTIONS } from "@/lib/constants";
 import { createTrip, type CreateTripState } from "@/lib/actions/trips";
 import { buildDayPlan, daysBetweenInclusive } from "@/lib/trip-builder";
+import { formatBHD } from "@/lib/currency";
 import type { BudgetRange, Profile } from "@/lib/types";
 
 const initialState: CreateTripState = {};
@@ -297,14 +298,14 @@ export function TripForm({ defaultDestination, defaultBudget, profile, submitLab
                               />
                               <span className={checked ? "font-semibold text-tp-ink" : "text-tp-ink/70"}>
                                 {option.label}
-                                <span className="block text-xs text-tp-ink/50">${option.cost}</span>
+                                <span className="block text-xs text-tp-ink/50">{formatBHD(option.cost)}</span>
                               </span>
                             </label>
                           </td>
                         );
                       })}
                       <td className="px-4 py-3 text-right align-top font-display text-base font-extrabold">
-                        ${selectedCost.toLocaleString()}
+                        {formatBHD(selectedCost)}
                       </td>
                     </tr>
                   );
@@ -314,7 +315,7 @@ export function TripForm({ defaultDestination, defaultBudget, profile, submitLab
           </div>
           <div className="dashed-divider flex items-center justify-between px-6 py-4">
             <span className="font-display text-lg font-extrabold">Estimated total</span>
-            <span className="font-display text-2xl font-extrabold">${totalCost.toLocaleString()}</span>
+            <span className="font-display text-2xl font-extrabold">{formatBHD(totalCost)}</span>
           </div>
         </div>
       )}
