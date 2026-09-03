@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { formatBHD } from "@/lib/currency";
 
 const NAV_ITEMS = ["Where next?", "Stays", "Flights", "Experiences"];
 
@@ -20,13 +22,53 @@ const CITIES: {
   price: number;
   bed: number;
   match: number;
-  gradient: string;
+  image: string;
 }[] = [
-  { key: "tbilisi", city: "Tbilisi", tags: "Wine · hills · steep streets", price: 234, bed: 18, match: 92, gradient: "from-amber-600 to-stone-800" },
-  { key: "reykjavik", city: "Reykjavík", tags: "Pools · lava · long light", price: 370, bed: 41, match: 88, gradient: "from-sky-500 to-indigo-900" },
-  { key: "marrakesh", city: "Marrakesh", tags: "Souks · riads · mint tea", price: 204, bed: 26, match: 85, gradient: "from-orange-500 to-red-700" },
-  { key: "hanoi", city: "Hanoi", tags: "Street food marathon", price: 324, bed: 15, match: 81, gradient: "from-rose-500 to-rose-900" },
-  { key: "lisbon", city: "Lisbon", tags: "Tiles · tarts · downhill trams", price: 155, bed: 23, match: 94, gradient: "from-orange-400 to-rose-500" },
+  {
+    key: "tbilisi",
+    city: "Tbilisi",
+    tags: "Wine · hills · steep streets",
+    price: 234,
+    bed: 18,
+    match: 92,
+    image: "https://images.unsplash.com/photo-1654167150882-e09d02b92d0f?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    key: "reykjavik",
+    city: "Reykjavík",
+    tags: "Pools · lava · long light",
+    price: 370,
+    bed: 41,
+    match: 88,
+    image: "https://images.unsplash.com/photo-1639588458309-76ee6aaafaaf?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    key: "marrakesh",
+    city: "Marrakesh",
+    tags: "Souks · riads · mint tea",
+    price: 204,
+    bed: 26,
+    match: 85,
+    image: "https://images.unsplash.com/photo-1674227053748-0b0d0ad0b7c9?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    key: "hanoi",
+    city: "Hanoi",
+    tags: "Street food marathon",
+    price: 324,
+    bed: 15,
+    match: 81,
+    image: "https://images.unsplash.com/photo-1613131145282-9476375618e1?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    key: "lisbon",
+    city: "Lisbon",
+    tags: "Tiles · tarts · downhill trams",
+    price: 155,
+    bed: 23,
+    match: 94,
+    image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?auto=format&fit=crop&w=800&q=80",
+  },
 ];
 
 const EXPERIENCE_TYPES = ["All", "Solo", "Couple", "Family"] as const;
@@ -37,7 +79,7 @@ const EXPERIENCES: {
   type: ExperienceType;
   badge: string;
   shadowClass: string;
-  gradient: string;
+  image: string;
   title: string;
   meta: string;
   rating: string;
@@ -52,7 +94,7 @@ const EXPERIENCES: {
     type: "Couple",
     badge: "💞 Couple",
     shadowClass: "card-hard-orange",
-    gradient: "from-indigo-500 to-purple-700",
+    image: "https://images.unsplash.com/photo-1547448526-5e9d57fa28f7?auto=format&fit=crop&w=800&q=80",
     title: "Tokyo → Osaka",
     meta: "9 nights · March · 2 people",
     rating: "4.8",
@@ -67,7 +109,7 @@ const EXPERIENCES: {
     type: "Solo",
     badge: "🎒 Solo",
     shadowClass: "card-hard-mint",
-    gradient: "from-emerald-600 to-teal-900",
+    image: "https://images.unsplash.com/photo-1577701122197-c9607038bd90?auto=format&fit=crop&w=800&q=80",
     title: "Georgia, slowly",
     meta: "12 nights · September · solo",
     rating: "4.6",
@@ -82,7 +124,7 @@ const EXPERIENCES: {
     type: "Family",
     badge: "👨‍👩‍👧‍👦 Family",
     shadowClass: "card-hard-yellow",
-    gradient: "from-amber-500 to-orange-700",
+    image: "https://images.unsplash.com/photo-1670781159228-8029beba05e9?auto=format&fit=crop&w=800&q=80",
     title: "Andalusia by car",
     meta: "7 nights · April · 2 adults, 2 kids",
     rating: "4.9",
@@ -96,7 +138,7 @@ const EXPERIENCES: {
 
 const TYPE_CHIPS = ["Solo", "Couple", "Family", "Friends"];
 
-const money = (n: number) => `$${n.toLocaleString("en-US")}`;
+const money = formatBHD;
 
 export default function LandingPage() {
   const [moods, setMoods] = useState<string[]>([]);
@@ -202,7 +244,14 @@ export default function LandingPage() {
           <div className="relative flex items-center justify-center overflow-hidden rounded-2xl bg-tp-mint p-8 sm:p-11">
             <div className="pointer-events-none absolute h-[440px] w-[440px] rounded-full bg-tp-ink/5" />
             <div className="card-hard-lg relative w-full max-w-[310px] -rotate-3 overflow-hidden bg-white">
-              <div className={`relative h-48 bg-gradient-to-br ${pick.gradient}`}>
+              <div className="relative h-48">
+                <Image
+                  src={pick.image}
+                  alt={pick.city}
+                  fill
+                  sizes="310px"
+                  className="object-cover"
+                />
                 <span className="badge-static absolute left-3 top-3">Today&apos;s pick</span>
               </div>
               <div className="p-4">
@@ -252,7 +301,14 @@ export default function LandingPage() {
                 href="/signup"
                 className="card-hard overflow-hidden transition-transform hover:-translate-y-0.5"
               >
-                <div className={`relative h-40 bg-gradient-to-br ${d.gradient}`}>
+                <div className="relative h-40">
+                  <Image
+                    src={d.image}
+                    alt={d.city}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
                   <span className="badge-static absolute right-2.5 top-2.5">{d.match}% you</span>
                 </div>
                 <div className="p-4">
@@ -299,7 +355,14 @@ export default function LandingPage() {
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
               {visibleExperiences.map((e) => (
                 <div key={e.id} className={`card-hard ${e.shadowClass} overflow-hidden bg-tp-cream text-tp-ink`}>
-                  <div className={`relative h-44 bg-gradient-to-br ${e.gradient}`}>
+                  <div className="relative h-44">
+                    <Image
+                      src={e.image}
+                      alt={e.title}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      className="object-cover"
+                    />
                     <span className="badge-static absolute left-3 top-3">{e.badge}</span>
                     <button
                       type="button"
