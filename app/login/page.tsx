@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { Logo } from "@/components/logo";
 import { login, type LoginState } from "./actions";
 
 const initialState: LoginState = {};
@@ -13,8 +14,8 @@ export default function LoginPage() {
     <div className="flex flex-1 flex-col bg-tp-cream lg:flex-row">
       <div className="flex flex-1 items-center justify-center px-6 py-16 sm:px-12">
         <div className="w-full max-w-sm">
-          <Link href="/" className="font-display text-lg font-extrabold text-tp-ink">
-            Tripiani
+          <Link href="/" className="text-tp-ink">
+            <Logo iconClassName="h-6 w-6" textClassName="text-lg" />
           </Link>
           <span className="badge-sticker mt-8 block w-fit">Welcome back</span>
           <h1 className="font-display mt-4 text-4xl font-extrabold sm:text-5xl">

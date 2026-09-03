@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/logo";
 import { signOut } from "@/lib/actions/auth";
 
 const LINKS = [
@@ -16,8 +17,8 @@ export function AppNav() {
   return (
     <header className="sticky top-0 z-10 bg-tp-ink text-tp-cream">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/home" className="font-display text-lg font-extrabold tracking-tight">
-          Tripiani
+        <Link href="/home">
+          <Logo iconClassName="h-6 w-6" textClassName="text-lg" />
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-2">

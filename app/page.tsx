@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 import { formatBHD } from "@/lib/currency";
 
 const NAV_ITEMS = ["Where next?", "Stays", "Flights", "Experiences"];
@@ -173,7 +174,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-10 bg-tp-ink text-tp-cream">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4 sm:px-10">
           <div className="flex items-center gap-8">
-            <span className="font-display text-xl font-extrabold tracking-tight">Tripiani</span>
+            <Logo iconClassName="h-7 w-7" textClassName="text-xl" />
             <nav className="hidden items-center gap-5 text-sm font-medium sm:flex">
               {NAV_ITEMS.map((item, i) => (
                 <span
