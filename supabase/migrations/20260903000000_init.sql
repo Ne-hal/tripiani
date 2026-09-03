@@ -1,9 +1,10 @@
 -- Trip Planner MVP schema: profiles, trips, recommendation_sets.
 -- Users live in Supabase's built-in auth.users; no separate users table needed.
+-- Safe to re-run: every statement is guarded so partial re-runs don't error.
 
 create extension if not exists "pgcrypto";
 
-create table profiles (
+create table if not exists profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   budget_range text not null check (budget_range in ('budget', 'mid', 'luxury')),
   hotel_preferences text[] not null default '{}',
@@ -15,7 +16,7 @@ create table profiles (
   updated_at timestamptz not null default now()
 );
 
-create table trips (
+create table if not exists trips (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,
   start_date date not null,
@@ -29,7 +30,7 @@ create table trips (
   updated_at timestamptz not null default now()
 );
 
-create table recommendation_sets (
+create table if not exists recommendation_sets (
   id uuid primary key default gen_random_uuid(),
   trip_id uuid not null unique references trips (id) on delete cascade,
   hotel_options jsonb not null default '[]',
@@ -38,10 +39,10 @@ create table recommendation_sets (
   created_at timestamptz not null default now()
 );
 
-create index trips_user_id_idx on trips (user_id);
+create index if not exists trips_user_id_idx on trips (user_id);
 
 -- Keep updated_at current on writes.
-create function set_updated_at()
+create or replace function set_updated_at()
 returns trigger
 language plpgsql
 as $$
@@ -51,10 +52,12 @@ begin
 end;
 $$;
 
+drop trigger if exists profiles_set_updated_at on profiles;
 create trigger profiles_set_updated_at
   before update on profiles
   for each row execute function set_updated_at();
 
+drop trigger if exists trips_set_updated_at on trips;
 create trigger trips_set_updated_at
   before update on trips
   for each row execute function set_updated_at();
@@ -64,16 +67,19 @@ alter table profiles enable row level security;
 alter table trips enable row level security;
 alter table recommendation_sets enable row level security;
 
+drop policy if exists "profiles are owned by the user" on profiles;
 create policy "profiles are owned by the user" on profiles
   for all
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
+drop policy if exists "trips are owned by the user" on trips;
 create policy "trips are owned by the user" on trips
   for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists "recommendation sets follow their trip's owner" on recommendation_sets;
 create policy "recommendation sets follow their trip's owner" on recommendation_sets
   for all
   using (exists (
