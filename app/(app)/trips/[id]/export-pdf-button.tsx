@@ -117,7 +117,7 @@ export function ExportPdfButton({
       type="button"
       onClick={handleExport}
       disabled={isGenerating}
-      className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-60"
+      className="btn-pill btn-primary text-sm disabled:opacity-60"
     >
       {isGenerating ? "Generating PDF..." : "Export PDF"}
     </button>

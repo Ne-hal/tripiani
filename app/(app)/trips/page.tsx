@@ -16,10 +16,17 @@ function formatDateRange(trip: Trip): string {
 }
 
 const STATUS_STYLES: Record<Trip["status"], string> = {
-  draft: "bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  planned: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
-  completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  draft: "bg-tp-cream text-tp-ink",
+  planned: "bg-tp-mint text-tp-ink",
+  completed: "bg-tp-yellow text-tp-ink",
 };
+
+const CARD_GRADIENTS = [
+  "from-orange-400 to-rose-500",
+  "from-emerald-400 to-teal-600",
+  "from-indigo-500 to-purple-600",
+  "from-sky-400 to-cyan-600",
+];
 
 export default async function TripsPage() {
   const supabase = await createClient();
@@ -39,47 +46,45 @@ export default async function TripsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Your trips</h1>
-        <Link
-          href="/trips/new"
-          className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground hover:opacity-90"
-        >
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="font-display text-4xl font-extrabold sm:text-5xl">Your trips</h1>
+        <Link href="/trips/new" className="btn-pill btn-primary text-sm">
           + Create Trip
         </Link>
       </div>
 
       {trips.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-          <p className="text-zinc-600 dark:text-zinc-400">
+        <div className="card-hard mt-10 p-10 text-center">
+          <p className="text-tp-ink/70">
             You haven&apos;t planned any trips yet.
           </p>
-          <Link
-            href="/trips/new"
-            className="mt-4 inline-block rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90"
-          >
+          <Link href="/trips/new" className="btn-pill btn-primary mt-5 inline-flex text-sm">
             + Create Trip
           </Link>
         </div>
       ) : (
-        <ul className="mt-6 flex flex-col gap-3">
-          {trips.map((trip) => (
+        <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {trips.map((trip, index) => (
             <li key={trip.id}>
-              <Link
-                href={`/trips/${trip.id}`}
-                className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 hover:border-accent dark:border-zinc-800 dark:bg-zinc-950"
-              >
-                <div>
-                  <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                    {trip.destination || "Destination TBD"}
-                  </p>
-                  <p className="text-sm text-zinc-500">{formatDateRange(trip)}</p>
-                </div>
-                <span
-                  className={`rounded-full px-2.5 py-1 text-xs font-medium capitalize ${STATUS_STYLES[trip.status]}`}
+              <Link href={`/trips/${trip.id}`} className="card-hard block overflow-hidden transition-transform hover:-translate-y-0.5">
+                <div
+                  className={`relative flex h-24 items-end bg-gradient-to-br p-3 ${CARD_GRADIENTS[index % CARD_GRADIENTS.length]}`}
                 >
-                  {trip.status}
-                </span>
+                  <span
+                    className={`badge-static absolute right-3 top-3 capitalize ${STATUS_STYLES[trip.status]}`}
+                  >
+                    {trip.status}
+                  </span>
+                  <span className="font-display text-lg font-extrabold text-white drop-shadow">
+                    {trip.destination || "Destination TBD"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-4">
+                  <p className="text-sm text-tp-ink/70">{formatDateRange(trip)}</p>
+                  <p className="text-sm font-semibold capitalize text-tp-ink">
+                    {trip.budget_range} budget
+                  </p>
+                </div>
               </Link>
             </li>
           ))}

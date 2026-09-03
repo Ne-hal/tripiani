@@ -10,64 +10,83 @@ export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(login, initialState);
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-16 dark:bg-black">
-      <div className="w-full max-w-sm rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Log in
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Welcome back to TripPlanner.
-        </p>
-
-        <form action={formAction} className="mt-6 flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              className="rounded-lg border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </div>
-
-          {state?.error && (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-              {state.error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={isPending}
-            className="mt-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-60"
-          >
-            {isPending ? "Logging in..." : "Log in"}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-zinc-500">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-medium text-accent hover:underline">
-            Sign up
+    <div className="flex flex-1 flex-col bg-tp-cream lg:flex-row">
+      <div className="flex flex-1 items-center justify-center px-6 py-16 sm:px-12">
+        <div className="w-full max-w-sm">
+          <Link href="/" className="font-display text-lg font-extrabold text-tp-ink">
+            Tripiani
           </Link>
-        </p>
+          <span className="badge-sticker mt-8 block w-fit">Welcome back</span>
+          <h1 className="font-display mt-4 text-4xl font-extrabold sm:text-5xl">
+            Log in
+          </h1>
+          <p className="mt-3 text-sm text-tp-ink/70">
+            Pick up right where you left off planning.
+          </p>
+
+          <form action={formAction} className="mt-8 flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="text-sm font-semibold text-tp-ink">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="input-tp"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="password" className="text-sm font-semibold text-tp-ink">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                className="input-tp"
+              />
+            </div>
+
+            {state?.error && (
+              <p className="rounded-xl border-2 border-tp-ink bg-tp-yellow px-3 py-2 text-sm font-medium text-tp-ink">
+                {state.error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="btn-pill btn-primary mt-2 disabled:opacity-60"
+            >
+              {isPending ? "Logging in..." : "Log in"}
+            </button>
+          </form>
+
+          <p className="mt-6 text-sm text-tp-ink/70">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="font-semibold text-tp-ink underline underline-offset-2">
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div className="relative hidden flex-1 items-center justify-center overflow-hidden bg-tp-mint p-12 lg:flex">
+        <div className="card-hard w-64 -rotate-3 bg-tp-cream p-4">
+          <div className="h-28 rounded-xl border-2 border-tp-ink bg-gradient-to-br from-orange-400 to-rose-500" />
+          <p className="font-display mt-3 text-lg font-extrabold text-tp-ink">Lisbon, 5 days</p>
+          <p className="text-xs text-tp-ink/60">Food &amp; culture itinerary &middot; example trip</p>
+        </div>
+        <div className="card-hard card-hard-orange absolute bottom-16 right-16 w-56 rotate-2 bg-white p-4">
+          <div className="h-24 rounded-xl border-2 border-tp-ink bg-gradient-to-br from-emerald-400 to-teal-600" />
+          <p className="font-display mt-3 text-base font-extrabold text-tp-ink">Kyoto, 6 days</p>
+          <p className="text-xs text-tp-ink/60">Hiking &amp; nature &middot; example trip</p>
+        </div>
       </div>
     </div>
   );

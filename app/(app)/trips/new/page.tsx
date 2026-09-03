@@ -23,16 +23,17 @@ export default async function NewTripPage({
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+    <div className="mx-auto max-w-3xl">
+      <span className="badge-sticker">New trip</span>
+      <h1 className="font-display mt-4 text-4xl font-extrabold sm:text-5xl">
         Create a trip
       </h1>
-      <p className="mt-1 text-sm text-zinc-500">
+      <p className="mt-2 text-sm text-tp-ink/70">
         We&apos;ll match hotels, flights, and an itinerary as soon as you
         submit.
       </p>
 
-      <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="mt-8">
         <NewTripForm defaultDestination={destination} defaultBudget={defaultBudget} />
       </div>
     </div>
