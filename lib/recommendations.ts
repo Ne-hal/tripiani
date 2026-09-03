@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   HotelOption,
   ItineraryOption,
@@ -7,169 +8,27 @@ import type {
 } from "@/lib/types";
 
 // -----------------------------------------------------------------------
-// Static mock catalog. This stands in for a real inventory/pricing API.
+// Catalog: read from the `hotels`, `flights`, and `itineraries` tables in
+// Supabase. Stands in for a real inventory/pricing API.
 // -----------------------------------------------------------------------
 
-const MOCK_HOTELS: Omit<HotelOption, "score">[] = [
-  {
-    id: "hotel-1",
-    name: "Seaside Budget Inn",
-    city: "Lisbon",
-    star_rating: 2,
-    price_per_night: 65,
-    amenities: ["wifi", "breakfast"],
-  },
-  {
-    id: "hotel-2",
-    name: "Lisbon Central Hostel & Suites",
-    city: "Lisbon",
-    star_rating: 3,
-    price_per_night: 95,
-    amenities: ["wifi", "pool", "breakfast"],
-  },
-  {
-    id: "hotel-3",
-    name: "Grand Riverside Lisbon",
-    city: "Lisbon",
-    star_rating: 5,
-    price_per_night: 340,
-    amenities: ["wifi", "pool", "spa", "gym", "breakfast", "room service"],
-  },
-  {
-    id: "hotel-4",
-    name: "Kyoto Zen Ryokan",
-    city: "Kyoto",
-    star_rating: 4,
-    price_per_night: 180,
-    amenities: ["wifi", "onsen", "breakfast"],
-  },
-  {
-    id: "hotel-5",
-    name: "Kyoto Backpacker House",
-    city: "Kyoto",
-    star_rating: 2,
-    price_per_night: 40,
-    amenities: ["wifi"],
-  },
-  {
-    id: "hotel-6",
-    name: "New York Midtown Suites",
-    city: "New York",
-    star_rating: 4,
-    price_per_night: 260,
-    amenities: ["wifi", "gym", "room service"],
-  },
-  {
-    id: "hotel-7",
-    name: "Brooklyn Budget Stay",
-    city: "New York",
-    star_rating: 2,
-    price_per_night: 85,
-    amenities: ["wifi", "breakfast"],
-  },
-  {
-    id: "hotel-8",
-    name: "Cancun All-Inclusive Resort",
-    city: "Cancun",
-    star_rating: 5,
-    price_per_night: 310,
-    amenities: ["wifi", "pool", "spa", "beach access", "breakfast"],
-  },
-  {
-    id: "hotel-9",
-    name: "Cancun Beachfront Mid",
-    city: "Cancun",
-    star_rating: 3,
-    price_per_night: 140,
-    amenities: ["wifi", "pool", "beach access"],
-  },
-  {
-    id: "hotel-10",
-    name: "Reykjavik Boutique Lodge",
-    city: "Reykjavik",
-    star_rating: 4,
-    price_per_night: 210,
-    amenities: ["wifi", "breakfast", "gym"],
-  },
-];
+async function fetchCatalog(supabase: SupabaseClient) {
+  const [hotelsRes, flightsRes, itinerariesRes] = await Promise.all([
+    supabase.from("hotels").select("*"),
+    supabase.from("flights").select("*"),
+    supabase.from("itineraries").select("*"),
+  ]);
 
-const MOCK_TRANSPORT: Omit<TransportOption, "score">[] = [
-  { id: "flight-1", airline: "AeroBudget", cabin_class: "economy", direct: false, price: 220 },
-  { id: "flight-2", airline: "AeroBudget", cabin_class: "economy", direct: true, price: 310 },
-  { id: "flight-3", airline: "SkyLuxe Airways", cabin_class: "business", direct: true, price: 1450 },
-  { id: "flight-4", airline: "SkyLuxe Airways", cabin_class: "premium economy", direct: true, price: 620 },
-  { id: "flight-5", airline: "Continental Wings", cabin_class: "economy", direct: true, price: 380 },
-  { id: "flight-6", airline: "Continental Wings", cabin_class: "economy", direct: false, price: 260 },
-  { id: "flight-7", airline: "GlobeJet", cabin_class: "first", direct: true, price: 2600 },
-  { id: "flight-8", airline: "GlobeJet", cabin_class: "economy", direct: false, price: 195 },
-];
+  if (hotelsRes.error) throw hotelsRes.error;
+  if (flightsRes.error) throw flightsRes.error;
+  if (itinerariesRes.error) throw itinerariesRes.error;
 
-const MOCK_ITINERARIES: Omit<ItineraryOption, "score">[] = [
-  {
-    id: "itin-1",
-    title: "Hiking & Nature Escape",
-    tags: ["hiking", "nature", "outdoors"],
-    days: [
-      { day: 1, activities: ["Arrive, short orientation walk", "Sunset viewpoint hike"] },
-      { day: 2, activities: ["Full-day guided trail hike", "Riverside picnic lunch"] },
-      { day: 3, activities: ["Waterfall trek", "Local trailhead market"] },
-    ],
-    estimated_cost: 180,
-  },
-  {
-    id: "itin-2",
-    title: "Museums & Culture Deep Dive",
-    tags: ["museums", "culture", "history"],
-    days: [
-      { day: 1, activities: ["National history museum", "Old town walking tour"] },
-      { day: 2, activities: ["Art gallery district", "Guided architecture tour"] },
-      { day: 3, activities: ["Local crafts workshop", "Evening cultural show"] },
-    ],
-    estimated_cost: 220,
-  },
-  {
-    id: "itin-3",
-    title: "Nightlife & Food Crawl",
-    tags: ["nightlife", "food", "bars"],
-    days: [
-      { day: 1, activities: ["Street food market tour", "Rooftop bar sunset"] },
-      { day: 2, activities: ["Chef's table tasting menu", "Late-night live music venue"] },
-    ],
-    estimated_cost: 260,
-  },
-  {
-    id: "itin-4",
-    title: "Beach & Relaxation",
-    tags: ["beaches", "relaxation", "swimming"],
-    days: [
-      { day: 1, activities: ["Beach day, umbrella & loungers", "Sunset catamaran cruise"] },
-      { day: 2, activities: ["Snorkeling excursion", "Beachside spa treatment"] },
-      { day: 3, activities: ["Free beach day", "Seafood dinner on the pier"] },
-    ],
-    estimated_cost: 150,
-  },
-  {
-    id: "itin-5",
-    title: "Family Friendly Sightseeing",
-    tags: ["family", "sightseeing", "kids"],
-    days: [
-      { day: 1, activities: ["City zoo or aquarium", "Park picnic"] },
-      { day: 2, activities: ["Interactive science museum", "Amusement park half-day"] },
-      { day: 3, activities: ["Boat tour", "Ice cream & waterfront stroll"] },
-    ],
-    estimated_cost: 200,
-  },
-  {
-    id: "itin-6",
-    title: "Foodie & Market Tour",
-    tags: ["food", "markets", "cooking"],
-    days: [
-      { day: 1, activities: ["Farmers market tour", "Hands-on cooking class"] },
-      { day: 2, activities: ["Vineyard or brewery visit", "Tasting-menu dinner"] },
-    ],
-    estimated_cost: 240,
-  },
-];
+  return {
+    hotels: (hotelsRes.data ?? []) as Omit<HotelOption, "score">[],
+    transport: (flightsRes.data ?? []) as Omit<TransportOption, "score">[],
+    itineraries: (itinerariesRes.data ?? []) as Omit<ItineraryOption, "score">[],
+  };
+}
 
 // -----------------------------------------------------------------------
 // Scoring helpers
@@ -271,24 +130,24 @@ export interface GeneratedRecommendations {
   itinerary_options: ItineraryOption[];
 }
 
-export function generateRecommendations(
+export async function generateRecommendations(
+  supabase: SupabaseClient,
   profile: Profile,
   trip: Trip,
-): GeneratedRecommendations {
-  const hotel_options = MOCK_HOTELS.map((hotel) => ({
-    ...hotel,
-    score: scoreHotel(hotel, profile, trip),
-  })).sort((a, b) => b.score - a.score);
+): Promise<GeneratedRecommendations> {
+  const { hotels, transport, itineraries } = await fetchCatalog(supabase);
 
-  const transport_options = MOCK_TRANSPORT.map((transport) => ({
-    ...transport,
-    score: scoreTransport(transport, profile, trip),
-  })).sort((a, b) => b.score - a.score);
+  const hotel_options = hotels
+    .map((hotel) => ({ ...hotel, score: scoreHotel(hotel, profile, trip) }))
+    .sort((a, b) => b.score - a.score);
 
-  const itinerary_options = MOCK_ITINERARIES.map((itinerary) => ({
-    ...itinerary,
-    score: scoreItinerary(itinerary, profile, trip),
-  })).sort((a, b) => b.score - a.score);
+  const transport_options = transport
+    .map((option) => ({ ...option, score: scoreTransport(option, profile, trip) }))
+    .sort((a, b) => b.score - a.score);
+
+  const itinerary_options = itineraries
+    .map((itinerary) => ({ ...itinerary, score: scoreItinerary(itinerary, profile, trip) }))
+    .sort((a, b) => b.score - a.score);
 
   return { hotel_options, transport_options, itinerary_options };
 }

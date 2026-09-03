@@ -84,7 +84,7 @@ export async function createTrip(
   const profile = profileRow as Profile | null;
 
   if (profile) {
-    const recommendations = generateRecommendations(profile, trip as Trip);
+    const recommendations = await generateRecommendations(supabase, profile, trip as Trip);
     await supabase.from("recommendation_sets").insert({
       trip_id: trip.id,
       hotel_options: recommendations.hotel_options,
