@@ -1,37 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile } from "@/lib/types";
-
-const SUGGESTED_DESTINATIONS: { name: string; blurb: string; price: string; gradient: string }[] = [
-  { name: "Lisbon", blurb: "Coastal charm & pastel streets", price: "from $65/night", gradient: "from-orange-400 to-rose-500" },
-  { name: "Kyoto", blurb: "Temples, gardens & quiet lanes", price: "from $40/night", gradient: "from-emerald-400 to-teal-600" },
-  { name: "New York", blurb: "Nonstop energy, world-class food", price: "from $85/night", gradient: "from-indigo-500 to-purple-600" },
-  { name: "Cancun", blurb: "Beaches & all-inclusive resorts", price: "from $140/night", gradient: "from-sky-400 to-cyan-600" },
-];
-
-const TODAYS_PICK = {
-  name: "Reykjavik",
-  blurb: "Northern lights & hot springs, 4 days",
-  gradient: "from-slate-500 to-blue-700",
-};
-
-const SIMILAR_TRAVELERS: { category: string; quote: string; cost: string }[] = [
-  {
-    category: "Food & culture",
-    quote: "A 5-day food & culture trip through Lisbon's old town and riverside markets.",
-    cost: "$820 total",
-  },
-  {
-    category: "Nature & hiking",
-    quote: "A Kyoto itinerary with temple hikes and quiet garden mornings.",
-    cost: "$610 total",
-  },
-  {
-    category: "Nightlife & food",
-    quote: "A New York long-weekend built around live music and tasting menus.",
-    cost: "$1,140 total",
-  },
-];
+import { DESTINATIONS as SUGGESTED_DESTINATIONS, TODAYS_PICK } from "@/lib/destinations";
+import { SIMILAR_TRAVELERS } from "@/lib/similar-travelers";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -86,9 +58,15 @@ export default async function HomePage() {
         <div className="flex justify-center lg:justify-end">
           <div className="card-hard w-full max-w-xs -rotate-2 bg-tp-mint p-4">
             <span className="badge-static">Today&apos;s pick</span>
-            <div
-              className={`mt-3 h-32 rounded-xl border-2 border-tp-ink bg-gradient-to-br ${TODAYS_PICK.gradient}`}
-            />
+            <div className="relative mt-3 h-32 overflow-hidden rounded-xl border-2 border-tp-ink">
+              <Image
+                src={TODAYS_PICK.image}
+                alt={TODAYS_PICK.name}
+                fill
+                sizes="(min-width: 1024px) 20vw, 90vw"
+                className="object-cover"
+              />
+            </div>
             <p className="font-display mt-3 text-xl font-extrabold text-tp-ink">
               {TODAYS_PICK.name}
             </p>
@@ -106,11 +84,17 @@ export default async function HomePage() {
               href={{ pathname: "/trips/new", query: { destination: dest.name } }}
               className="card-hard group overflow-hidden transition-transform hover:-translate-y-0.5"
             >
-              <div
-                className={`relative flex h-28 items-end bg-gradient-to-br p-3 ${dest.gradient}`}
-              >
-                <span className="badge-static absolute right-3 top-3">{dest.price}</span>
-                <span className="font-display text-lg font-extrabold text-white drop-shadow">
+              <div className="relative flex h-28 items-end p-3">
+                <Image
+                  src={dest.image}
+                  alt={dest.name}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <span className="badge-static absolute right-3 top-3 z-10">{dest.price}</span>
+                <span className="font-display relative z-10 text-lg font-extrabold text-white drop-shadow">
                   {dest.name}
                 </span>
               </div>
@@ -136,16 +120,26 @@ export default async function HomePage() {
           </p>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
             {SIMILAR_TRAVELERS.map((item) => (
-              <div key={item.category} className="card-hard flex flex-col justify-between p-5">
-                <div>
-                  <span className="badge-sticker">{item.category}</span>
-                  <p className="mt-4 text-sm text-tp-ink/80">{item.quote}</p>
+              <div key={item.category} className="card-hard flex flex-col overflow-hidden">
+                <div className="relative h-32">
+                  <Image
+                    src={item.image}
+                    alt={item.category}
+                    fill
+                    sizes="(min-width: 640px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <span className="badge-sticker absolute left-3 top-3 z-10">{item.category}</span>
                 </div>
-                <div className="dashed-divider mt-4 flex items-center justify-between pt-4">
-                  <span className="text-sm font-bold text-tp-ink">{item.cost}</span>
-                  <Link href="/trips" className="btn-pill btn-secondary py-1.5 text-xs">
-                    See the trip
-                  </Link>
+                <div className="flex flex-1 flex-col justify-between p-5">
+                  <p className="text-sm text-tp-ink/80">{item.quote}</p>
+                  <div className="dashed-divider mt-4 flex items-center justify-between pt-4">
+                    <span className="text-sm font-bold text-tp-ink">{item.cost}</span>
+                    <Link href="/trips" className="btn-pill btn-secondary py-1.5 text-xs">
+                      See the trip
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
