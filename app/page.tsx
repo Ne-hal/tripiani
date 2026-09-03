@@ -7,6 +7,24 @@ const PREVIEW_DESTINATIONS: { name: string; blurb: string; gradient: string }[] 
   { name: "Cancun", blurb: "Beaches & all-inclusive resorts", gradient: "from-sky-400 to-cyan-600" },
 ];
 
+const SIMILAR_TRAVELERS: { category: string; quote: string; cost: string }[] = [
+  {
+    category: "Food & culture",
+    quote: "A 5-day food & culture trip through Lisbon's old town and riverside markets.",
+    cost: "$820 total",
+  },
+  {
+    category: "Nature & hiking",
+    quote: "A Kyoto itinerary with temple hikes and quiet garden mornings.",
+    cost: "$610 total",
+  },
+  {
+    category: "Nightlife & food",
+    quote: "A New York long-weekend built around live music and tasting menus.",
+    cost: "$1,140 total",
+  },
+];
+
 export default function LandingPage() {
   return (
     <div className="flex flex-1 flex-col bg-tp-cream">
@@ -71,6 +89,37 @@ export default function LandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        <div className="-mx-6 mt-24 bg-tp-ink px-6 py-16 text-tp-cream sm:-mx-12 sm:px-12">
+          <div className="mx-auto max-w-5xl text-left">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="font-display text-2xl font-extrabold sm:text-3xl">
+                People with similar interests went to
+              </h2>
+              <span className="badge-static bg-tp-cream text-tp-ink">Preview</span>
+            </div>
+            <p className="mt-2 text-sm text-tp-cream/60">
+              Preview &mdash; real matching arrives once more travellers join.
+              Shown here for illustration only.
+            </p>
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+              {SIMILAR_TRAVELERS.map((item) => (
+                <div key={item.category} className="card-hard flex flex-col justify-between p-5">
+                  <div>
+                    <span className="badge-sticker">{item.category}</span>
+                    <p className="mt-4 text-sm text-tp-ink/80">{item.quote}</p>
+                  </div>
+                  <div className="dashed-divider mt-4 flex items-center justify-between pt-4">
+                    <span className="text-sm font-bold text-tp-ink">{item.cost}</span>
+                    <Link href="/signup" className="btn-pill btn-secondary py-1.5 text-xs">
+                      Sign up to see more
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
