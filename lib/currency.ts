@@ -4,8 +4,5 @@ const USD_TO_BHD_RATE = 0.376;
 
 export function formatBHD(amountUsd: number): string {
   const bhd = amountUsd * USD_TO_BHD_RATE;
-  return `BHD ${bhd.toLocaleString(undefined, {
-    minimumFractionDigits: 3,
-    maximumFractionDigits: 3,
-  })}`;
+  return `BHD ${Math.round(bhd).toLocaleString()}`;
 }
