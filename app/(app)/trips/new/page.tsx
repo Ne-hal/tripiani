@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { NewTripForm } from "./new-trip-form";
+import { TripForm } from "@/components/trip-form";
+import type { Profile } from "@/lib/types";
 
 export default async function NewTripPage({
   searchParams,
@@ -12,29 +13,29 @@ export default async function NewTripPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  let defaultBudget: string | undefined;
+  let profile: Profile | null = null;
   if (user) {
-    const { data: profile } = await supabase
+    const { data } = await supabase
       .from("profiles")
-      .select("budget_range")
+      .select("*")
       .eq("id", user.id)
       .maybeSingle();
-    defaultBudget = profile?.budget_range;
+    profile = data as Profile | null;
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-6xl">
       <span className="badge-sticker">New trip</span>
       <h1 className="font-display mt-4 text-4xl font-extrabold sm:text-5xl">
         Create a trip
       </h1>
       <p className="mt-2 text-sm text-tp-ink/70">
-        We&apos;ll match hotels, flights, and an itinerary as soon as you
-        submit.
+        Fill in your trip basics, then fine-tune the flight, hotel, and
+        activity picks for every day of your trip.
       </p>
 
       <div className="mt-8">
-        <NewTripForm defaultDestination={destination} defaultBudget={defaultBudget} />
+        <TripForm defaultDestination={destination} defaultBudget={profile?.budget_range} profile={profile} />
       </div>
     </div>
   );

@@ -104,6 +104,12 @@ const MOCK_TRANSPORT: Omit<TransportOption, "score">[] = [
   { id: "flight-8", airline: "GlobeJet", cabin_class: "economy", direct: false, price: 195 },
 ];
 
+const MOCK_GROUND_TRANSFERS: { id: string; label: string; price: number }[] = [
+  { id: "transfer-shuttle", label: "Airport shuttle", price: 15 },
+  { id: "transfer-taxi", label: "Taxi", price: 35 },
+  { id: "transfer-private", label: "Private car", price: 70 },
+];
+
 const MOCK_ITINERARIES: Omit<ItineraryOption, "score">[] = [
   {
     id: "itin-1",
@@ -261,9 +267,37 @@ function scoreItinerary(
   return clampScore(score);
 }
 
+function scoreGroundTransfer(
+  transfer: { id: string; label: string; price: number },
+  trip: Trip,
+): number {
+  let score = 45;
+
+  const tripBudgetIdx = BUDGET_ORDER[trip.budget_range] ?? 1;
+  const impliedTier = transfer.price < 25 ? 0 : transfer.price < 50 ? 1 : 2;
+  const budgetDistance = Math.abs(tripBudgetIdx - impliedTier);
+  score += budgetDistance === 0 ? 20 : budgetDistance === 1 ? 5 : -15;
+
+  return clampScore(score);
+}
+
 // -----------------------------------------------------------------------
 // Public API
 // -----------------------------------------------------------------------
+
+export interface GroundTransferOption {
+  id: string;
+  label: string;
+  price: number;
+  score: number;
+}
+
+export function generateGroundTransferOptions(trip: Trip): GroundTransferOption[] {
+  return MOCK_GROUND_TRANSFERS.map((transfer) => ({
+    ...transfer,
+    score: scoreGroundTransfer(transfer, trip),
+  })).sort((a, b) => b.score - a.score);
+}
 
 export interface GeneratedRecommendations {
   hotel_options: HotelOption[];
