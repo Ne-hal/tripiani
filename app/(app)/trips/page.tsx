@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { Trip } from "@/lib/types";
+import { findDestinationImage } from "@/lib/destinations";
 
 function formatDateRange(trip: Trip): string {
   const start = new Date(trip.start_date).toLocaleDateString(undefined, {
@@ -64,18 +66,36 @@ export default async function TripsPage() {
         </div>
       ) : (
         <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {trips.map((trip, index) => (
+          {trips.map((trip, index) => {
+            const image = findDestinationImage(trip.destination);
+            return (
             <li key={trip.id}>
               <Link href={`/trips/${trip.id}`} className="card-hard block overflow-hidden transition-transform hover:-translate-y-0.5">
                 <div
-                  className={`relative flex h-24 items-end bg-gradient-to-br p-3 ${CARD_GRADIENTS[index % CARD_GRADIENTS.length]}`}
+                  className={
+                    image
+                      ? "relative flex h-24 items-end p-3"
+                      : `relative flex h-24 items-end bg-gradient-to-br p-3 ${CARD_GRADIENTS[index % CARD_GRADIENTS.length]}`
+                  }
                 >
+                  {image ? (
+                    <>
+                      <Image
+                        src={image}
+                        alt={trip.destination ?? "Trip destination"}
+                        fill
+                        sizes="(min-width: 640px) 50vw, 100vw"
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                    </>
+                  ) : null}
                   <span
-                    className={`badge-static absolute right-3 top-3 capitalize ${STATUS_STYLES[trip.status]}`}
+                    className={`badge-static absolute right-3 top-3 z-10 capitalize ${STATUS_STYLES[trip.status]}`}
                   >
                     {trip.status}
                   </span>
-                  <span className="font-display text-lg font-extrabold text-white drop-shadow">
+                  <span className="font-display relative z-10 text-lg font-extrabold text-white drop-shadow">
                     {trip.destination || "Destination TBD"}
                   </span>
                 </div>
@@ -87,7 +107,8 @@ export default async function TripsPage() {
                 </div>
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>

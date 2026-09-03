@@ -1,11 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-
-const PREVIEW_DESTINATIONS: { name: string; blurb: string; gradient: string }[] = [
-  { name: "Lisbon", blurb: "Coastal charm & pastel streets", gradient: "from-orange-400 to-rose-500" },
-  { name: "Kyoto", blurb: "Temples, gardens & quiet lanes", gradient: "from-emerald-400 to-teal-600" },
-  { name: "New York", blurb: "Nonstop energy, world-class food", gradient: "from-indigo-500 to-purple-600" },
-  { name: "Cancun", blurb: "Beaches & all-inclusive resorts", gradient: "from-sky-400 to-cyan-600" },
-];
+import { DESTINATIONS as PREVIEW_DESTINATIONS } from "@/lib/destinations";
 
 const SIMILAR_TRAVELERS: { category: string; quote: string; cost: string }[] = [
   {
@@ -76,11 +71,17 @@ export default function LandingPage() {
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PREVIEW_DESTINATIONS.map((dest) => (
               <div key={dest.name} className="card-hard overflow-hidden">
-                <div
-                  className={`relative flex h-32 items-end bg-gradient-to-br p-3 ${dest.gradient}`}
-                >
-                  <span className="badge-static absolute right-3 top-3">Preview</span>
-                  <span className="font-display text-lg font-extrabold text-white drop-shadow">
+                <div className="relative flex h-32 items-end p-3">
+                  <Image
+                    src={dest.image}
+                    alt={dest.name}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <span className="badge-static absolute right-3 top-3 z-10">Preview</span>
+                  <span className="font-display relative z-10 text-lg font-extrabold text-white drop-shadow">
                     {dest.name}
                   </span>
                 </div>
