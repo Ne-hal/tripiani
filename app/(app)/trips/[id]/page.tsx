@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { formatBHD } from "@/lib/currency";
 import type { RecommendationSet, Trip } from "@/lib/types";
 import { ExportPdfButton } from "./export-pdf-button";
 
@@ -114,7 +115,7 @@ export default async function TripDetailPage({
                 Running total
               </p>
               <p className="font-display mt-1 text-3xl font-extrabold">
-                ${runningTotal.toLocaleString()}
+                {formatBHD(runningTotal)}
               </p>
               <span
                 className={`badge-static mt-2 inline-flex ${
@@ -161,7 +162,7 @@ export default async function TripDetailPage({
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold text-tp-ink">
-                          ${itinerary.estimated_cost} est.
+                          {formatBHD(itinerary.estimated_cost)} est.
                         </span>
                       </div>
                     </div>
@@ -200,7 +201,7 @@ export default async function TripDetailPage({
                         </p>
                       </div>
                     </div>
-                    <span className="font-display text-xl font-extrabold">${transport.price}</span>
+                    <span className="font-display text-xl font-extrabold">{formatBHD(transport.price)}</span>
                   </div>
                 ))}
               </div>
@@ -222,7 +223,7 @@ export default async function TripDetailPage({
                       {hotel.city} &middot; {"★".repeat(hotel.star_rating)}
                     </p>
                     <p className="mt-2 text-sm font-bold text-tp-ink">
-                      ${hotel.price_per_night}
+                      {formatBHD(hotel.price_per_night)}
                       <span className="font-normal text-tp-ink/60"> / night</span>
                     </p>
                     <p className="dashed-divider mt-3 pt-3 text-xs text-tp-ink/60">
@@ -240,21 +241,21 @@ export default async function TripDetailPage({
               <div className="dashed-divider mt-4 flex flex-col gap-2 pt-4 text-sm">
                 <div className="flex justify-between">
                   <span className="text-tp-ink/70">Flight</span>
-                  <span className="font-semibold">${flightCost.toLocaleString()}</span>
+                  <span className="font-semibold">{formatBHD(flightCost)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-tp-ink/70">Hotel &times; {nights} night{nights > 1 ? "s" : ""}</span>
-                  <span className="font-semibold">${hotelCost.toLocaleString()}</span>
+                  <span className="font-semibold">{formatBHD(hotelCost)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-tp-ink/70">Itinerary (est.)</span>
-                  <span className="font-semibold">${itineraryCost.toLocaleString()}</span>
+                  <span className="font-semibold">{formatBHD(itineraryCost)}</span>
                 </div>
               </div>
               <div className="dashed-divider mt-3 flex items-center justify-between pt-3">
                 <span className="font-display text-lg font-extrabold">Total</span>
                 <span className="font-display text-lg font-extrabold">
-                  ${runningTotal.toLocaleString()}
+                  {formatBHD(runningTotal)}
                 </span>
               </div>
             </section>

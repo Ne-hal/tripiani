@@ -1,24 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { DESTINATIONS as PREVIEW_DESTINATIONS } from "@/lib/destinations";
-
-const SIMILAR_TRAVELERS: { category: string; quote: string; cost: string }[] = [
-  {
-    category: "Food & culture",
-    quote: "A 5-day food & culture trip through Lisbon's old town and riverside markets.",
-    cost: "$820 total",
-  },
-  {
-    category: "Nature & hiking",
-    quote: "A Kyoto itinerary with temple hikes and quiet garden mornings.",
-    cost: "$610 total",
-  },
-  {
-    category: "Nightlife & food",
-    quote: "A New York long-weekend built around live music and tasting menus.",
-    cost: "$1,140 total",
-  },
-];
+import { SIMILAR_TRAVELERS } from "@/lib/similar-travelers";
 
 export default function LandingPage() {
   return (
@@ -107,16 +90,26 @@ export default function LandingPage() {
             </p>
             <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
               {SIMILAR_TRAVELERS.map((item) => (
-                <div key={item.category} className="card-hard flex flex-col justify-between p-5">
-                  <div>
-                    <span className="badge-sticker">{item.category}</span>
-                    <p className="mt-4 text-sm text-tp-ink/80">{item.quote}</p>
+                <div key={item.category} className="card-hard flex flex-col overflow-hidden">
+                  <div className="relative h-32">
+                    <Image
+                      src={item.image}
+                      alt={item.category}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                    <span className="badge-sticker absolute left-3 top-3 z-10">{item.category}</span>
                   </div>
-                  <div className="dashed-divider mt-4 flex items-center justify-between pt-4">
-                    <span className="text-sm font-bold text-tp-ink">{item.cost}</span>
-                    <Link href="/signup" className="btn-pill btn-secondary py-1.5 text-xs">
-                      Sign up to see more
-                    </Link>
+                  <div className="flex flex-1 flex-col justify-between p-5">
+                    <p className="text-sm text-tp-ink/80">{item.quote}</p>
+                    <div className="dashed-divider mt-4 flex items-center justify-between pt-4">
+                      <span className="text-sm font-bold text-tp-ink">{item.cost}</span>
+                      <Link href="/signup" className="btn-pill btn-secondary py-1.5 text-xs">
+                        Sign up to see more
+                      </Link>
+                    </div>
                   </div>
                 </div>
               ))}

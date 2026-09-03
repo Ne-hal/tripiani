@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatBHD } from "@/lib/currency";
 import type { HotelOption, RecommendationSet, Trip, TransportOption } from "@/lib/types";
 
 interface ExportPdfButtonProps {
@@ -68,7 +69,7 @@ export function ExportPdfButton({
       if (topHotel) {
         heading("Top hotel pick");
         paragraph(
-          `${topHotel.name} (${topHotel.city}) — ${"*".repeat(topHotel.star_rating)} — $${topHotel.price_per_night}/night`,
+          `${topHotel.name} (${topHotel.city}) — ${"*".repeat(topHotel.star_rating)} — ${formatBHD(topHotel.price_per_night)}/night`,
         );
         paragraph(`Amenities: ${topHotel.amenities.join(", ")}`);
         y += 6;
@@ -79,7 +80,7 @@ export function ExportPdfButton({
         paragraph(
           `${topTransport.airline} — ${topTransport.cabin_class} — ${
             topTransport.direct ? "Direct" : "Connecting"
-          } — $${topTransport.price}`,
+          } — ${formatBHD(topTransport.price)}`,
         );
         y += 6;
       }
@@ -88,7 +89,7 @@ export function ExportPdfButton({
       let totalItineraryCost = 0;
       for (const itinerary of recommendations.itinerary_options.slice(0, 1)) {
         totalItineraryCost += itinerary.estimated_cost;
-        paragraph(`${itinerary.title} (est. $${itinerary.estimated_cost})`, 12);
+        paragraph(`${itinerary.title} (est. ${formatBHD(itinerary.estimated_cost)})`, 12);
         for (const day of itinerary.days) {
           paragraph(`Day ${day.day}: ${day.activities.join(", ")}`);
         }
@@ -101,9 +102,9 @@ export function ExportPdfButton({
         totalItineraryCost;
       heading("Estimated total cost");
       paragraph(
-        `Hotel (1 night shown): $${topHotel?.price_per_night ?? 0}  +  Flight: $${
-          topTransport?.price ?? 0
-        }  +  Itinerary: $${totalItineraryCost}  =  $${total}`,
+        `Hotel (1 night shown): ${formatBHD(topHotel?.price_per_night ?? 0)}  +  Flight: ${formatBHD(
+          topTransport?.price ?? 0,
+        )}  +  Itinerary: ${formatBHD(totalItineraryCost)}  =  ${formatBHD(total)}`,
       );
 
       doc.save(`trip-${trip.id}.pdf`);
