@@ -60,6 +60,14 @@ body {
     box-shadow: 5px 5px 0 var(--color-tp-orange);
   }
 
+  .card-hard-mint {
+    box-shadow: 5px 5px 0 var(--color-tp-mint);
+  }
+
+  .card-hard-yellow {
+    box-shadow: 5px 5px 0 var(--color-tp-yellow);
+  }
+
   .badge-sticker {
     display: inline-flex;
     align-items: center;
